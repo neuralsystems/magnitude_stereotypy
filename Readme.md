@@ -25,4 +25,4 @@ Download the source files, extract to a new folder, and add this folder and all 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](License.md) file for details
