@@ -16,15 +16,14 @@ function resultPath = createresultfolder(nameNewFolder, overrideDefaultPath)
 % Example:
 %   CREATERESULTFOLDER('new_results')
 %   Creates the 'new_results' folder (if it does not already exist) in the
-%   default results folder at 'E:\aarush\neuro_lab_iitk\projects\matlab\phd\'
+%   default results folder
 
 %**********************************************************************%
 % Author: Aarush Mohit Mittal
 % Contact: aarush (dot) mohit (at) gmail (dot) com
 %**********************************************************************%
 
-defaultPath = 'E:\aarush\neuro_lab_iitk\projects\matlab\phd\results\';
-% defaultPath = [pwd, '\'];
+defaultPath = fullfile(pwd, 'new_results', filesep);
 % specify default value for the override switch
 if nargin < 2
     overrideDefaultPath = false;
