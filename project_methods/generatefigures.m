@@ -1233,7 +1233,7 @@ else
 end
 % initialise storage variables
 
-numActivePn = cell2mat(cellfun(@(y) cellfun(@(x) sum(x>0), y.simulationData.vopn(1, :)), S, 'UniformOutput', false));
+numActivePn = cell2mat(cellfun(@(y) cellfun(@(x) sum(x>0), y.simulationData.vopn(1, :)), S, 'UniformOutput', false).');
 [~, idSortedPn] = sort(numActivePn, 2);
 nGroup = 7;
 rng('default');
@@ -1376,9 +1376,9 @@ fprintf('Generated Supplementary Figure 5\n');
 pathSimulation = createresultfolder([params.pathCommon, 'default_network_new_seed\']);
 if ~exist([pathSimulation, 'pn_correlation_data.mat'], 'file')
     savepnvectorcorrelationvsstereotypyplot(pathSimulation, params.nSeed);
-else
-    load([pathSimulation, 'pn_correlation_data.mat']);
 end
+load([pathSimulation, 'pn_correlation_data.mat']);
+
 default = load([pathSimulation, 'overall_stereotypy_data.mat'], 'seedwiseDistanceStereotypy');
 objPlot(1, 1) = gramm('y', default.seedwiseDistanceStereotypy{3}(:), 'x', seedwisePearsonCorrelationPn{1}(:));
 objPlot(1, 1).geom_point();

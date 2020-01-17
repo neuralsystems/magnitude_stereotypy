@@ -23,6 +23,6 @@ nPairInd = size(pairInd, 1);
 % calculate stereotypy for all individual pairs
 pairwiseCorrelation = zeros(nPairInd, 1);
 for iPairInd = 1:nPairInd
-    pairwiseCorrelation(iPairInd) = corr(spikeData(pairInd(iPairInd, 1), :).', spikeData(pairInd(iPairInd, 2), :).', 'Type', 'Pearson');
+    pairwiseCorrelation(iPairInd) = corr(spikeData(pairInd(iPairInd, 1), :).', spikeData(pairInd(iPairInd, 2), :).', 'Type', 'Pearson', 'rows', 'complete');
 end % for iPairInd
 end % computeindividualpairpearsoncorrelation
