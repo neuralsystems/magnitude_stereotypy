@@ -20,7 +20,7 @@ for eachFolder = nameFolders
     fprintf('Analysis finished for %s\n', eachFolder{:});
 end
 % run special analyses
-nameFolders = {'default_network'};
+nameFolders = {'default_network_odor_100'};
 for eachFolder = nameFolders
     if exist([pathResult, eachFolder{:}, '\raw_data.mat'], 'file') && ~exist([pathResult, eachFolder{:}, '\individual_stereotypy_data.mat'], 'file')
         load([pathResult, eachFolder{:}, '\raw_data.mat']);

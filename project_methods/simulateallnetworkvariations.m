@@ -32,6 +32,8 @@ function simulateallnetworkvariations()
 %   24. Partitioned Network Cases with Both Odors having Different Input Drives
 %   25. Default Network with Variation in PN-KC Connection Probability
 %   26. Default Network with Variation in KC Response Threshold
+%   27. Default Network Cases with Variation in number of PNs
+%   28. Default Network Cases with Variation in PN response probability
 
 %**********************************************************************%
 % Author: Aarush Mohit Mittal
@@ -74,10 +76,12 @@ pathResult = createresultfolder(pathSimulation);
 newParams = defaultParams;
 newParams.simulationParams.input.vopn.nInput = 100;
 % simulate network
-S = cell(nSeed, 1);
-timeStamp = tic;
-S{1} = VectorOlfactorySimulation(newParams, idSeed(1));
-toc(timeStamp)
+for iSeed = 1:nSeed
+    fprintf('Iteration %d: ', iSeed);
+    timeStamp = tic;
+    S{iSeed} = VectorOlfactorySimulation(newParams, idSeed(iSeed));
+    toc(timeStamp)
+end % for iSeed
 save([pathResult, 'raw_data.mat'], 'S', 'idSeed', 'nSeed', 'defaultParams', 'newParams');
 %---------------------------------------------------------------------------------------------------%
 
@@ -551,7 +555,7 @@ rng('default'); % reset random number generator for reproducible results
 newParams = defaultParams;
 newParams.simulationParams.input.vopn.nInput = 100;
 % set noise range
-noiseRange = 4:4:40;
+noiseRange = [2 4:4:12];
 for noise = noiseRange
     idSeed = sort(randperm(1e5, nSeed)); % generate seeds for the simulations
     % make simulation folder
@@ -734,6 +738,60 @@ for thresh = thresholdRange
     newParams.networkParams.neuronLayer.vokc.threshold = thresh;
     % make simulation folder
     pathSimulation = [pathCommon, sprintf('default_network_kc_thresh_%d\\', thresh)];
+    pathResult = createresultfolder(pathSimulation);
+    % simulate network
+    S = cell(nSeed, 1);
+    for iSeed = 1:nSeed
+        fprintf('Iteration %d: ', iSeed);
+        timeStamp = tic;
+        S{iSeed} = VectorOlfactorySimulation(newParams, idSeed(iSeed));
+        toc(timeStamp)
+    end % for iSeed
+    save([pathResult, 'raw_data.mat'], 'S', 'idSeed', 'nSeed', 'defaultParams', 'newParams');
+end
+%---------------------------------------------------------------------------------------------------%
+
+%%%%%%%%%%--Default Network Cases with Variation in number of PNs--%%%%%%%%%%
+nSeed = 100;
+rng('default'); % reset random number generator for reproducible results
+idSeed = sort(randperm(1e5, nSeed)); % generate seeds for the simulations
+% set new params
+newParams = defaultParams;
+newParams.simulationParams.input.vopn.nInput = 100;
+% set variation ranges
+numRange = 20:5:100;
+for nNeuron = numRange
+    % set KC number
+    newParams.networkParams.neuronLayer.vopn.nNeuron = nNeuron;
+    % make simulation folder
+    pathSimulation = [pathCommon, sprintf('default_network_num_pn_%d\\', nNeuron)];
+    pathResult = createresultfolder(pathSimulation);
+    % simulate network
+    S = cell(nSeed, 1);
+    for iSeed = 1:nSeed
+        fprintf('Iteration %d: ', iSeed);
+        timeStamp = tic;
+        S{iSeed} = VectorOlfactorySimulation(newParams, idSeed(iSeed));
+        toc(timeStamp)
+    end % for iSeed
+    save([pathResult, 'raw_data.mat'], 'S', 'idSeed', 'nSeed', 'defaultParams', 'newParams');
+end
+%---------------------------------------------------------------------------------------------------%
+
+%%%%%%%%%%--Default Network Cases with Variation in PN response probability--%%%%%%%%%%
+nSeed = 100;
+rng('default'); % reset random number generator for reproducible results
+idSeed = sort(randperm(1e5, nSeed)); % generate seeds for the simulations
+% set new params
+newParams = defaultParams;
+newParams.simulationParams.input.vopn.nInput = 100;
+% set variation ranges
+pRange = 0.1:0.05:0.9;
+for p = pRange
+    % set KC number
+    newParams.simulationParams.input.vopn.pInput = p;
+    % make simulation folder
+    pathSimulation = [pathCommon, sprintf('default_network_pn_p_%.2f\\', p)];
     pathResult = createresultfolder(pathSimulation);
     % simulate network
     S = cell(nSeed, 1);

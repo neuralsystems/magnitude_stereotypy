@@ -1,4 +1,4 @@
-function distanceStereotypy = computeindividualpairstereotypy(spikeData)
+function distanceStereotypy = computeindividualpairstereotypy(spikeData, zeroNaNs)
 %%COMPUTEINDIVIDUALPAIRSTEREOTYPY Calculates euclidean distance based 
 %stereotypy values for each input for each individual and odor pair. It
 %finds average D1 (squared error between odors for the same individuals) and
@@ -10,6 +10,7 @@ function distanceStereotypy = computeindividualpairstereotypy(spikeData)
 %
 % Inputs:
 %      spikeData: double matrix of size nIndividual x nOdor
+%       zeroNaNs: switch to set nans to 0 or not (Default: true)
 %
 % Output:
 %   distanceStereotypy: distance based stereotypy for each odor and individual pair
@@ -19,6 +20,9 @@ function distanceStereotypy = computeindividualpairstereotypy(spikeData)
 % Contact: aarush (dot) mohit (at) gmail (dot) com
 %**********************************************************************%
 
+if nargin < 2
+    zeroNaNs = true;
+end
 [nInd, nOdor] = size(spikeData);
 % find all individual pairs
 pairInd = nchoosek(1:nInd, 2);
@@ -30,24 +34,26 @@ nPairOdor = size(pairOdor, 1);
 distanceStereotypy = zeros(nPairInd, nPairOdor);
 for iPairInd = 1:nPairInd
     for iPairOdor = 1:nPairOdor
-        distanceStereotypy(iPairInd, iPairOdor) = computepairstereotypy(spikeData(pairInd(iPairInd, :), pairOdor(iPairOdor, :)));
+        distanceStereotypy(iPairInd, iPairOdor) = computepairstereotypy(spikeData(pairInd(iPairInd, :), pairOdor(iPairOdor, :)), zeroNaNs);
     end % for iPairOdor
 end % for iPairInd
 end % computeindividualpairstereotypy
 
-function stereotypy = computepairstereotypy(spikeData)
+function stereotypy = computepairstereotypy(spikeData, zeroNaNs)
 % calculate squared error between odors for the same individuals
-D1 = mean(diff(spikeData) .^ 2);
+D1 = sum(diff(spikeData) .^ 2);
 % calculate squared error between odors for the different individuals
 newData = spikeData;
 newData(2, :) = newData(2, 2:-1:1);
-D2 = mean(diff(newData) .^ 2);
+D2 = sum(diff(newData) .^ 2);
 % calculate stereotypy
 tempStereotypy = (D2 - D1) ./ (D2 + D1);
-% convert NaNs to 0 (NaNs indicate that both the distances are 0. In such a
-% case we cannot distinguish reliably between odors and individuals and
-% stereotypy should be 0)
-tempStereotypy(isnan(tempStereotypy)) = 0;
+% % convert NaNs to 0 (NaNs indicate that both the distances are 0. In such a
+% % case we cannot distinguish reliably between odors and individuals and
+% % stereotypy should be 0)
+if zeroNaNs
+    tempStereotypy(isnan(tempStereotypy)) = 0;
+end
 % report mean stereotypy
 stereotypy = tempStereotypy;
 end % calculatepairstereotypy

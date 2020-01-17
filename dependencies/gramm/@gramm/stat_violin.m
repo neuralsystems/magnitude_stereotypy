@@ -155,9 +155,8 @@ for ind_x=1:length(uni_x)
         
         %Draw mean
         if params.mean
-            mean_ysel = mean(ysel);
-            dens_ysel = dens{ind_x}(finddenspos(mean_ysel, dens_pos{ind_x}))*1.2;
-            mean_hndl=plot([boxmid(ind_x)-dens_ysel boxmid(ind_x)+dens_ysel],[mean_ysel mean_ysel],'k-','LineWidth',2);
+            mean_ysel = nanmean(ysel);
+            mean_hndl=plot([boxmid(ind_x)-(boxw/2) boxmid(ind_x)+(boxw/2)],[mean_ysel mean_ysel],'k-','LineWidth',2);
         end
         
         %Draw errorbar
